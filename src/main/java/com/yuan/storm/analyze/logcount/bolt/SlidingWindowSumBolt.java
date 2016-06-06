@@ -38,12 +38,12 @@ public class SlidingWindowSumBolt extends BaseWindowedBolt {
 
     @Override
     public void execute(TupleWindow inputWindow) {
-            /*
-             * The inputWindow gives a view of
-             * (a) all the events in the window
-             * (b) events that expired since last activation of the window
-             * (c) events that newly arrived since last activation of the window
-             */
+    /*
+     * The inputWindow gives a view of
+     * (a) all the events in the window
+     * (b) events that expired since last activation of the window
+     * (c) events that newly arrived since last activation of the window
+     */
         List<Tuple> tuplesInWindow = inputWindow.get();
         List<Tuple> newTuples = inputWindow.getNew();
         List<Tuple> expiredTuples = inputWindow.getExpired();
@@ -63,9 +63,11 @@ public class SlidingWindowSumBolt extends BaseWindowedBolt {
             sum -= (int) tuple.getValue(0);
             System.out.println("SumBolt: current subtracted msg ID: " + tuple.getValue(2) + " ts: " + tuple.getValue(1));
         }
+        
         collector.emit(new Values(sum));
+        
         end = System.currentTimeMillis();
-        System.out.println("SumBolt: Events in current window: " + tuplesInWindow.size() + " ts: " + end +  " use time: " + (end - start));
+        System.out.println("SumBolt: Events in current window: " + tuplesInWindow.size() + " ts: " + end +  " use time: " + (end - start) + "sum " + sum);
     }
 
     @Override

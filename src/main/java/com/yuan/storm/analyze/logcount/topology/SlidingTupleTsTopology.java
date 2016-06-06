@@ -9,6 +9,8 @@ import org.apache.storm.utils.Utils;
 
 import com.yuan.storm.analyze.logcount.bolt.PrinterBolt;
 import com.yuan.storm.analyze.logcount.bolt.SlidingWindowSumBolt;
+
+
 import com.yuan.storm.analyze.logcount.spout.RandomIntegerSpout;
 
 import java.util.concurrent.TimeUnit;
@@ -25,7 +27,8 @@ public class SlidingTupleTsTopology {
         BaseWindowedBolt bolt = new SlidingWindowSumBolt()
                 .withWindow(new Duration(5, TimeUnit.SECONDS), new Duration(5, TimeUnit.SECONDS))
                 .withTimestampField("ts")
-                .withLag(new Duration(2, TimeUnit.SECONDS));
+//                .withWatermarkInterval(new Duration(5, TimeUnit.SECONDS))
+                .withLag(new Duration(5, TimeUnit.SECONDS));
         
         builder.setSpout("integer", new RandomIntegerSpout(), 1);
         builder.setBolt("slidingsum", bolt, 1).shuffleGrouping("integer");

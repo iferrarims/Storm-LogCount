@@ -50,6 +50,7 @@ public class SlidingWindowTopology {
             int sum = 0;
             List<Tuple> tuplesInWindow = inputWindow.get();
             LOG.debug("Events in current window: " + tuplesInWindow.size());
+            
             if (tuplesInWindow.size() > 0) {
                 /*
                 * Since this is a tumbling window calculation,
@@ -57,8 +58,10 @@ public class SlidingWindowTopology {
                 */
                 for (Tuple tuple : tuplesInWindow) {
                     sum += (int) tuple.getValue(0);
+                    System.out.println("TumblingBolt: value:" + tuple.getValue(0));
                 }
                 collector.emit(new Values(sum / tuplesInWindow.size()));
+                System.out.println("TumblingBolt: Events in current window: " + tuplesInWindow.size() + " avg: " + sum / tuplesInWindow.size());
             }
         }
 
@@ -73,10 +76,10 @@ public class SlidingWindowTopology {
         TopologyBuilder builder = new TopologyBuilder();
         builder.setSpout("integer", new RandomIntegerSpout(), 1);
         
-        builder.setBolt("slidingsum", new SlidingWindowSumBolt().withWindow(new Count(10), new Count(5)), 1)
+        builder.setBolt("slidingsum", new SlidingWindowSumBolt().withWindow(new Count(5), new Count(5)), 1)
                 .shuffleGrouping("integer");
         
-        builder.setBolt("tumblingavg", new TumblingWindowAvgBolt().withTumblingWindow(new Count(3)), 1)
+        builder.setBolt("tumblingavg", new TumblingWindowAvgBolt().withTumblingWindow(new Count(2)), 1)
                 .shuffleGrouping("slidingsum");
         
         builder.setBolt("printer", new PrinterBolt(), 1).shuffleGrouping("tumblingavg");
@@ -89,7 +92,7 @@ public class SlidingWindowTopology {
         } else {
             LocalCluster cluster = new LocalCluster();
             cluster.submitTopology("sliding_window", conf, builder.createTopology());
-            Utils.sleep(20000);
+            Utils.sleep(40000);
             cluster.killTopology("sliding_window");
             cluster.shutdown();
             System.exit(1);
