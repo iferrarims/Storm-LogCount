@@ -22,6 +22,7 @@ public class WordCounter extends BaseRichBolt {
 	private static final long serialVersionUID = 886149197481637894L;
 	private OutputCollector collector;
 	private Map<String, AtomicInteger> counterMap;
+	
 
 	@Override
 	public void prepare(Map stormConf, TopologyContext context,
