@@ -60,6 +60,12 @@
     	<artifactId>json</artifactId>
     	<version>20160212</version>
 	</dependency>
+	<dependency>
+    	<groupId>org.elasticsearch</groupId>
+    	<artifactId>elasticsearch</artifactId>
+    	<version>2.3.3</version>
+	</dependency>
+	
 	
     <dependency>
 	  <groupId>org.apache.storm</groupId>

@@ -74,9 +74,9 @@ public class KafkaWordSplitter extends BaseRichBolt {
 		}
 				
 		try {
-			String clazzValue = null;
-			clazzValue = jsonObj.getString(clazzName);
-			this.collector.emit("clazzStreamID", new Values(clazzValue, ts, msgID));
+			String classValue = null;
+			classValue = jsonObj.getString(clazzName);
+			this.collector.emit("classStreamID", new Values(classValue, ts, msgID));
 		}catch(JSONException ex){
 			System.out.println("JSONException" + ex.toString());
 		}
@@ -90,14 +90,14 @@ public class KafkaWordSplitter extends BaseRichBolt {
 		}
 		
 		collector.ack(input);
-		Utils.sleep(1000);
+		Utils.sleep(700);
 	}
 
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
 		declarer.declareStream("projectStreamID", new Fields("projectName", "ts", "msgID"));
 		declarer.declareStream("methodStreamID", new Fields("methodName", "ts", "msgID"));
-		declarer.declareStream("clazzStreamID", new Fields("clazzName", "ts", "msgID"));
+		declarer.declareStream("classStreamID", new Fields("className", "ts", "msgID"));
 	}
 
 }

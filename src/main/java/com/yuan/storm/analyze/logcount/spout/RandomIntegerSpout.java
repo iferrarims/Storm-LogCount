@@ -41,17 +41,17 @@ public class RandomIntegerSpout extends BaseRichSpout {
 
     @Override
     public void nextTuple() {
-        Utils.sleep(800);
+        Utils.sleep(500);
 //        collector.emit(new Values(rand.nextInt(1000), System.currentTimeMillis() - (24 * 60 * 60 * 1000), ++msgId), msgId);
 //        collector.emit(new Values(rand.nextInt(1000), ts=System.currentTimeMillis(), ++msgId), msgId);
         //时间戳加随机值
 //        collector.emit(new Values(1, ts=System.currentTimeMillis() + rand.nextInt(5000), ++msgId), msgId);
 //        int i = -rand.nextInt(12000) + 6000;
-        int i = -rand.nextInt(6000);
+        int i = -rand.nextInt(8000);
         System.out.println("i = " + i);
         collector.emit(new Values(1, ts=System.currentTimeMillis() + i, ++msgId), msgId);
 //        collector.emit(new Values(1, ts = System.currentTimeMillis(), ++msgId), msgId);
-        System.out.println("current ts: " + System.currentTimeMillis());
+//        System.out.println("current ts: " + System.currentTimeMillis());
         System.out.printf("randomSpout emit message ts:%d msgID:%d\r\n", ts, msgId);
     }
 

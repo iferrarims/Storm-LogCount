@@ -25,12 +25,12 @@ public class SlidingTupleTsTopology {
     public static void main(String[] args) throws Exception {
         TopologyBuilder builder = new TopologyBuilder();
         BaseWindowedBolt bolt = new SlidingWindowSumBolt()
-                .withWindow(new Duration(10, TimeUnit.SECONDS), new Duration(10, TimeUnit.SECONDS))
+                .withWindow(new Duration(5, TimeUnit.SECONDS), new Duration(5, TimeUnit.SECONDS))
                 .withTimestampField("ts")
                 .withWatermarkInterval(new Duration(1, TimeUnit.SECONDS))
-                .withLag(new Duration(2, TimeUnit.SECONDS));
+                .withLag(new Duration(3, TimeUnit.SECONDS));
         
-        builder.setSpout("integer", new RandomIntegerSpout(), 1);
+        builder.setSpout("integer", new RandomIntegerSpout(), 1).setNumTasks(1);
         builder.setBolt("slidingsum", bolt, 1).shuffleGrouping("integer");
         builder.setBolt("printer", new PrinterBolt(), 1).shuffleGrouping("slidingsum");
         Config conf = new Config();
@@ -42,7 +42,7 @@ public class SlidingTupleTsTopology {
         } else {
             LocalCluster cluster = new LocalCluster();
             cluster.submitTopology("test", conf, builder.createTopology());
-            Utils.sleep(40000);
+            Utils.sleep(60000);
             cluster.killTopology("test");
             cluster.shutdown();
             System.exit(1);
