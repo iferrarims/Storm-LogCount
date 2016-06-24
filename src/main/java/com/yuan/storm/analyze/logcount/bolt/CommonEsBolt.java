@@ -20,18 +20,14 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.common.transport.TransportAddress;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Write2EsBolt extends BaseRichBolt {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(Write2EsBolt.class);
-	private static final long serialVersionUID = 1L;
+public class CommonEsBolt extends BaseRichBolt {
+	private static final long serialVersionUID = 2021198015295864975L;
+	private static final Logger LOG = LoggerFactory.getLogger(CommonEsBolt.class);
 	private OutputCollector collector;
-	private Map<String, Integer> counts = new HashMap<String, Integer>();
-	private long ts = 0;
-	private String name = null;
+	private Map<String, Object> counts = new HashMap<String, Object>();
 	private Client client;
 	private String ip = "172.28.20.100";
 
@@ -43,41 +39,30 @@ public class Write2EsBolt extends BaseRichBolt {
 		 try {
 			client = TransportClient.builder().settings(settings).build().addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(ip), 9300));
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(Tuple input) {
-		counts = (Map<String, Integer>) input.getValueByField("sumMap");
-		ts = (long) input.getValueByField("ts");
-		name = (String) input.getValueByField("name");
+		counts = (Map<String, Object>) input.getValueByField("count");
 		
 		/* 产生索引 */
 		Date now = new Date();
 		DateFormat df = new SimpleDateFormat("yyyy.MM.dd");
 		String logIndex = "logcount-" + df.format(now);
 		
-		Iterator iter = counts.entrySet().iterator();
-		while (iter.hasNext()) {
-        	Map.Entry<String, Integer> entry = (Entry<String, Integer>) iter.next();
-        	Map<String, Object> sumCount = new HashMap<String, Object>();
-        	sumCount.put("category_name", name);
-        	sumCount.put("timestamp", new Date(ts));
-        	sumCount.put("item_name", entry.getKey());
-        	sumCount.put("total_count", entry.getValue());
-        	sumCount.put("@timestamp", new Date());
-        	
-        	try {
-                IndexResponse response = client.prepareIndex(logIndex, "info")
-                        .setSource(sumCount)
-                        .execute()
-                        .actionGet();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }	
+		counts.put("@timestamp", now);
+
+    	try {
+            IndexResponse response = client.prepareIndex(logIndex, "info")
+                    .setSource(counts)
+                    .execute()
+                    .actionGet();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 
 	@Override

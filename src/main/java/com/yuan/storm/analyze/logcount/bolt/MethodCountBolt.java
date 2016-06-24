@@ -27,14 +27,14 @@ public class MethodCountBolt extends BaseWindowedBolt {
     private int sum = 0;
     private OutputCollector collector;
     private String methodName = null;
-    private Jedis jedis = null;
+//    private Jedis jedis = null;
     private long ts = 0;
     
     @Override
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		this.collector = collector;
-		jedis = new Jedis("172.28.29.151", 6379);
+//		jedis = new Jedis("172.28.29.151", 6379);
 	}
 
 
@@ -53,16 +53,16 @@ public class MethodCountBolt extends BaseWindowedBolt {
         	}
         	count++;
         	counts.put(methodName, count);	
-        	System.out.println("MethodCountBolt: msgID " + tuple.getValue(2));
+//        	System.out.println("MethodCountBolt: msgID " + tuple.getValue(2));
         }
         
-        Iterator iter = counts.entrySet().iterator();
-        while (iter.hasNext()) {
-        	Map.Entry<String, Integer> entry = (Entry<String, Integer>) iter.next();
-        	this.jedis.zadd("s_server", entry.getValue(), entry.getKey());
-
-        }
-        
+//        Iterator iter = counts.entrySet().iterator();
+//        while (iter.hasNext()) {
+//        	Map.Entry<String, Integer> entry = (Entry<String, Integer>) iter.next();
+//        	this.jedis.zadd("s_server", entry.getValue(), entry.getKey());
+//
+//        }
+//        
         ts = System.currentTimeMillis();
         collector.emit(new Values(counts, ts, "method_name"));
 

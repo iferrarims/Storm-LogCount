@@ -28,6 +28,7 @@ public class ProjectCountBolt extends BaseWindowedBolt {
     private OutputCollector collector;
     private String proName = null;
     private long ts = 0;
+    private long msgTS = 0l;
 //    private Jedis jedis = null;
     
     @Override
@@ -36,7 +37,6 @@ public class ProjectCountBolt extends BaseWindowedBolt {
 		this.collector = collector;
 //		jedis = new Jedis("172.28.29.151", 6379);
 	}
-    
     
 
 	@Override
@@ -54,8 +54,10 @@ public class ProjectCountBolt extends BaseWindowedBolt {
         	}
         	count++;
         	counts.put(proName, count);	
-        	System.out.println("ProjectCountBolt: msgID " + tuple.getValue(2));
+//        	System.out.println("ProjectCountBolt: msgID " + tuple.getValue(2));
         }
+        
+        msgTS = (long) newTuples.get(0).getValueByField("ts");
         
 //        Iterator iter = counts.entrySet().iterator();
 //        while (iter.hasNext()) {
@@ -66,7 +68,7 @@ public class ProjectCountBolt extends BaseWindowedBolt {
         
         ts = System.currentTimeMillis();
         collector.emit(new Values(counts, ts, "project_name"));
-        System.out.println("ProjectCountBolt: Events in current window: " + tuplesInWindow.size() + " timestamp: " + System.currentTimeMillis());
+        System.out.println("ProjectCountBolt: Events in current window: " + tuplesInWindow.size() + " timestamp: " + System.currentTimeMillis() + " msgTS" + msgTS);
 		
 	}
 	

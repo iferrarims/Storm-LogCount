@@ -47,20 +47,22 @@ public class KafkaWordSplitter extends BaseRichBolt {
 		String msgID = null;
 		
 //		LOG.info("RECV[kafka -> splitter] " + line);
-		System.out.println("KafkaWordSplitterBoltRecive: " + line);
+//		System.out.println("KafkaWordSplitterBoltRecive: " + line);
 		
 		JSONObject jsonObj = new JSONObject(line);
 		
 		//JSON 格式化
 		try{		
-			timestamp = jsonObj.getString("timestamp");
-			ts = Long.parseLong(timestamp);
+//			timestamp = jsonObj.getString("timestamp");
+			ts = (long) jsonObj.get("date");
+//			ts = Long.parseLong(timestamp);
 		} catch(JSONException ex){
 			System.out.println("JSONException" + ex.toString());
 		}
 		
 		try{
-			msgID = jsonObj.getString("msgID");
+//			msgID = jsonObj.getString("msgID");
+			msgID = jsonObj.getString("id");
 		}catch(JSONException ex){
 			System.out.println("JSONException" + ex.toString());
 		}
@@ -75,7 +77,7 @@ public class KafkaWordSplitter extends BaseRichBolt {
 				
 		try {
 			String classValue = null;
-			classValue = jsonObj.getString(clazzName);
+			classValue = jsonObj.getString(clazzName).split(" ")[jsonObj.getString(clazzName).split(" ").length - 1];
 			this.collector.emit("classStreamID", new Values(classValue, ts, msgID));
 		}catch(JSONException ex){
 			System.out.println("JSONException" + ex.toString());
@@ -89,8 +91,19 @@ public class KafkaWordSplitter extends BaseRichBolt {
 			System.out.println("JSONException" + ex.toString());
 		}
 		
+		
+		try {
+			String outputMsg = null;
+			outputMsg = jsonObj.getString("outputInfo");
+			JSONObject outputObj = new JSONObject(outputMsg);
+			String resultCode = outputObj.getString("returnCode");
+			this.collector.emit("resultCodeID", new Values(resultCode, ts, msgID));
+		}catch(JSONException ex){
+			System.out.println("JSONException" + ex.toString());
+		}
+		
 		collector.ack(input);
-		Utils.sleep(700);
+//		Utils.sleep(700);
 	}
 
 	@Override
@@ -98,6 +111,7 @@ public class KafkaWordSplitter extends BaseRichBolt {
 		declarer.declareStream("projectStreamID", new Fields("projectName", "ts", "msgID"));
 		declarer.declareStream("methodStreamID", new Fields("methodName", "ts", "msgID"));
 		declarer.declareStream("classStreamID", new Fields("className", "ts", "msgID"));
+		declarer.declareStream("resultCodeID", new Fields("resultCode", "ts", "msgID"));
 	}
 
 }
