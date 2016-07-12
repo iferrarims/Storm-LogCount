@@ -38,6 +38,7 @@ public class ProjectCountBolt extends BaseWindowedBolt {
 //		jedis = new Jedis("172.28.29.151", 6379);
 	}
     
+    
 
 	@Override
 	public void execute(TupleWindow inputWindow) {

@@ -43,7 +43,6 @@ public class Write2EsBolt extends BaseRichBolt {
 		 try {
 			client = TransportClient.builder().settings(settings).build().addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(ip), 9300));
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

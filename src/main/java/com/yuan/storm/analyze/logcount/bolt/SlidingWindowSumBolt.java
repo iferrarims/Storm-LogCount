@@ -28,7 +28,7 @@ public class SlidingWindowSumBolt extends BaseWindowedBolt {
     private int sum = 0;
     private OutputCollector collector;
     private long start = 0l;
-    private long end = 0l;
+    private long end = 0l; 
 
     @Override
     public void prepare(Map stormConf, TopologyContext context, OutputCollector collector) {

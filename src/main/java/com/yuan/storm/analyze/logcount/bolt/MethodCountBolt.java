@@ -34,8 +34,8 @@ public class MethodCountBolt extends BaseWindowedBolt {
 	public void prepare(Map stormConf, TopologyContext context,
 			OutputCollector collector) {
 		this.collector = collector;
-//		jedis = new Jedis("172.28.29.151", 6379);
 	}
+    
 
 
 	@Override

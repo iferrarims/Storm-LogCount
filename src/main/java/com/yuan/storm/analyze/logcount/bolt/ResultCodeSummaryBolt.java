@@ -21,9 +21,7 @@ public class ResultCodeSummaryBolt extends BaseWindowedBolt {
 	private static final long serialVersionUID = -2847097659094404675L;
 	private OutputCollector collector;
 	private String result = null;
-	private int resultCode = 0;
 	private long msgTS = 0l;
-	private int count = 0;
 	private long ts = 0;
 	
 	@Override
@@ -38,11 +36,16 @@ public class ResultCodeSummaryBolt extends BaseWindowedBolt {
         List<Tuple> newTuples = inputWindow.getNew();
         List<Tuple> expiredTuples = inputWindow.getExpired();
         
+        int Logincount = 0;
+        int registerCount = 0;
+        
         for (Tuple tuple : newTuples) {
         	result = (String) tuple.getValue(0);
-        	resultCode = Integer.parseInt(result);
-        	if (10000 == resultCode) {
-        		count++;
+        	if (result.equals("10000")) {
+        		Logincount++;
+        	}
+        	else if (result.equals("10002")) {
+        		registerCount++;
         	}
         }
         
@@ -50,11 +53,21 @@ public class ResultCodeSummaryBolt extends BaseWindowedBolt {
         
         ts = System.currentTimeMillis();
         
-        Map<String, Object> counts = new HashMap<String, Object>();
-        counts.put("longin_success", count);
-        counts.put("timestamp", new Date(msgTS));
-        collector.emit(new Values(counts, new Date(ts)));
-        System.out.println("ResultCodeSummaryBolt count: " + count);
+        if (0 != Logincount) {        
+	        Map<String, Object> counts = new HashMap<String, Object>();
+	        counts.put("login_success", Logincount);
+	        counts.put("timestamp", new Date(msgTS));
+	        collector.emit(new Values(counts, new Date(ts)));
+	        System.out.println("ResultCodeSummaryBolt count: " + Logincount + " Events in current window: " + tuplesInWindow.size());
+        }
+        
+        if (0 != registerCount) {
+	        Map<String, Object> registerCounts = new HashMap<String, Object>();
+	        registerCounts.put("register_success", registerCount);
+	        registerCounts.put("timestamp", new Date(msgTS));
+	        collector.emit(new Values(registerCounts, new Date(ts)));
+	        System.out.println("ResultCodeSummaryBolt register count : " + registerCount);
+        }
 	}
 	
 	@Override

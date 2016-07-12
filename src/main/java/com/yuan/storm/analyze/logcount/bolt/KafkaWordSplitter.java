@@ -31,7 +31,6 @@ public class KafkaWordSplitter extends BaseRichBolt {
 	private long ts = 0l;
 	
 	
-//	private Jedis jedis = null;
 
 	@Override
 	public void prepare(Map stormConf, TopologyContext context,
@@ -39,6 +38,7 @@ public class KafkaWordSplitter extends BaseRichBolt {
 		this.collector = collector;
 //		jedis = new Jedis("172.28.29.151", 6379);
 //		jedis.del("s_server");
+		
 	}
 
 	@Override
@@ -91,7 +91,6 @@ public class KafkaWordSplitter extends BaseRichBolt {
 			System.out.println("JSONException" + ex.toString());
 		}
 		
-		
 		try {
 			String outputMsg = null;
 			outputMsg = jsonObj.getString("outputInfo");
@@ -101,6 +100,8 @@ public class KafkaWordSplitter extends BaseRichBolt {
 		}catch(JSONException ex){
 			System.out.println("JSONException" + ex.toString());
 		}
+		
+		ts = 0l;
 		
 		collector.ack(input);
 //		Utils.sleep(700);

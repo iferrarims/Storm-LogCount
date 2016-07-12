@@ -67,7 +67,6 @@ public class CommonEsBolt extends BaseRichBolt {
 
 	@Override
 	public void declareOutputFields(OutputFieldsDeclarer declarer) {
-		// TODO Auto-generated method stub
 		
 	}
 

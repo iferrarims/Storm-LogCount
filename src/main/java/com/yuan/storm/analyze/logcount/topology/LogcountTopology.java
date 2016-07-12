@@ -27,12 +27,11 @@ import com.yuan.storm.analyze.logcount.bolt.ClassCountBolt;
 import com.yuan.storm.analyze.logcount.bolt.CommonEsBolt;
 import com.yuan.storm.analyze.logcount.bolt.KafkaWordSplitter;
 import com.yuan.storm.analyze.logcount.bolt.MethodCountBolt;
-import com.yuan.storm.analyze.logcount.bolt.PrinterBolt;
 import com.yuan.storm.analyze.logcount.bolt.ProjectCountBolt;
 import com.yuan.storm.analyze.logcount.bolt.ResultCodeSummaryBolt;
-import com.yuan.storm.analyze.logcount.bolt.SlidingWindowSumBolt;
-import com.yuan.storm.analyze.logcount.bolt.WordCounter;
 import com.yuan.storm.analyze.logcount.bolt.Write2EsBolt;
+
+
 
 public class LogcountTopology {
 	public static void main (String[] args) throws AlreadyAliveException, InvalidTopologyException, AuthorizationException, InterruptedException {
